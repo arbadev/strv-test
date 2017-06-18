@@ -75,7 +75,7 @@ export default class User extends Model {
 
   static findByEmailAndPassword({ email, password }) {
     return this.signPassword(password)
-    .then(hash => this.findOne({ email, password: hash }))
+    .then(hash => this.findOne({ email, password: hash }).lean())
   }
 
 }

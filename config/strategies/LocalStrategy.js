@@ -10,7 +10,9 @@ export default class LocalStrategy extends Strategy {
 
   static strategy(req, email, password, done) {
     User.findByEmailAndPassword({ email, password })
-    .then(user => done(null, user))
+    .then(user => {
+      done(null, user)
+    })
     .catch(err => done(err, null))
   }
 

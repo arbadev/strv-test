@@ -14,6 +14,7 @@ describe('UserController', () => {
       avatar: 'https://plus.google.com/u/0/photos/102649207486252015624/albums/profile/6166370300506278162',
       gender: 'male',
       email: 'a3barradas@gmail.com',
+      password: '87985748a3',
     },
     {
       firstName: 'strv',
@@ -30,11 +31,15 @@ describe('UserController', () => {
       email: 'a3barradas@gmail.com',
     },
   ]
+
+  const crendentials = { email: 'a3barradas@gmail.com', password: '87985748a3' }
+
   const and3 = users[0]
   const strv = users[1]
   const duplicated = users[2]
   // before(function*() {
-  //   // and3.token = yield Token.generate(and3)
+  //   yield User.create(and3)
+  //   and3.token = yield Token.generate(and3)
   //   // strv.token = yield Token.generate(strv)
   //   // duplicated.token = yield Token.generate(duplicated)
   // })
@@ -66,5 +71,13 @@ describe('UserController', () => {
     .send(duplicated)
     .expect(409)
     // proton.log.debug('duplicated', response)
+  })
+
+  it('should auth and3 user', function*() {
+    const response = yield request
+    .post('/users/auth')
+    .send(crendentials)
+    .expect(200)
+    // proton.log.debug('user', response)
   })
 })

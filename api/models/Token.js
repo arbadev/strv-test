@@ -17,6 +17,7 @@ const metadataSchema = {
   email: {
     type: String,
   },
+  password: String,
 }
 
 /*
@@ -56,7 +57,7 @@ export default class Token extends Model {
   * @return the token value
   */
   static generate(metadata) {
-    console.log('metadata @ Token', metadata);
+    // proton.log.debug('metadata @ Token', metadata)
     const tokenData = {
       metadata,
       value: hat(),

@@ -2,9 +2,11 @@
 import Router from 'koa-router'
 
 const router = new Router({ prefix: '/users' })
-const { AuthPolicies, UserPolicies } = proton.app.policies
-const { UserController } = proton.app.controllers
+const { AuthPolicies } = proton.app.policies
+const { UserController, AuthController } = proton.app.controllers
 
 router.post('/', UserController.create)
+
+router.post('/auth', AuthPolicies.local, AuthController.authenticate)
 
 module.exports = router

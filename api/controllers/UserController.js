@@ -7,9 +7,7 @@ export default class UserController extends Controller {
   * create() {
     try {
       const { body } = this.request
-      body.password = Crypto.createHash('sha256')
-        .update(`${process.env.STRV_SECRET_KEY_SIGNATURE}:${body.password}`)
-        .digest('base64')
+      body.password = yield User.signPassword(body.password)
       const user = yield User.create(body)
       const token = yield Token.generate(user)
       this.response.body = { user, token }
