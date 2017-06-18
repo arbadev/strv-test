@@ -14,9 +14,6 @@ const metadataSchema = {
   gender: {
     type: String,
   },
-  birthdate: {
-    type: Date,
-  },
   email: {
     type: String,
   },
@@ -59,6 +56,7 @@ export default class Token extends Model {
   * @return the token value
   */
   static generate(metadata) {
+    console.log('metadata @ Token', metadata);
     const tokenData = {
       metadata,
       value: hat(),

@@ -2,7 +2,6 @@
 import Model from 'proton-mongoose-model'
 import Hat from 'hat'
 import Crypto from 'crypto'
-const genders = ['male', 'female', 'other']
 
 /*
  *------------------------------------------------------------------------------
