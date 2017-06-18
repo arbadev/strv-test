@@ -39,6 +39,7 @@ export default class AuthPolicies extends Policy {
         this.response.status = 401
         return this
       }
+      proton.log.debug('User @ Bearer', user)
       this.request.user = user
       this.request.scope = scope
       return yield next

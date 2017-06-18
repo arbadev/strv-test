@@ -2,6 +2,7 @@
 
 import Model from 'proton-mongoose-model'
 import hat from 'hat'
+import moment from 'moment'
 
 /*
  *------------------------------------------------------------------------------
@@ -37,6 +38,11 @@ export default class Token extends Model {
         type: Date,
         required: true,
         default: Date.now,
+      },
+      expiredAt: {
+        type: Date,
+        required: true,
+        default: moment().add(1, 'h').toDate(),
       },
     }
   }

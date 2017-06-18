@@ -9,4 +9,6 @@ router.post('/', UserController.create)
 
 router.post('/auth', AuthPolicies.local, AuthController.authenticate)
 
+router.get('/:id/contacts', AuthPolicies.bearer, UserController.retrieveContacts)
+
 module.exports = router

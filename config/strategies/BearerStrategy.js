@@ -14,10 +14,8 @@ export default class BearerStrategy extends Strategy {
       .then(token => {
         if (!token) throw new Error('Token not found')
 
-        const criteria = token.facebookId ?
-          { facebookId: token.facebookId } :
-          { googleId: token.googleId }
-        return Promise.all([token, User.findOne(criteria)])
+        const criteria = { email: token.metadata.email, password: token.metadata.password }
+        return Promise.all([token, User.findByEmailAndPassword(criteria)])
       })
       .then(([token, user]) => {
         if (!user) return done(null, token, 'without user')
