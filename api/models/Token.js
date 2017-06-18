@@ -3,20 +3,35 @@
 import Model from 'proton-mongoose-model'
 import hat from 'hat'
 
+/*
+ *------------------------------------------------------------------------------
+ *                                    Sub Schemas
+ *------------------------------------------------------------------------------
+ */
+const metadataSchema = {
+  firstName: String,
+  lastName: String,
+  gender: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
+}
+
+/*
+ *------------------------------------------------------------------------------
+ *                              Principal Schema
+ *------------------------------------------------------------------------------
+ */
+
 export default class Token extends Model {
 
   schema() {
     return {
       value: String,
       scope: String,
-      metadata: {
-        email: {
-          type: String,
-        },
-        password: {
-          type: String,
-        },
-      },
+      metadata: metadataSchema,
       createdAt: {
         type: Date,
         required: true,
@@ -29,7 +44,6 @@ export default class Token extends Model {
   * afterCreate(token, next) {
     const criteria = {
       email: token.metadata.email,
-      password: token.metadata.password,
     }
     const values = { lastLoginAt: token.createdAt }
     yield User.update(criteria, values)
@@ -42,6 +56,7 @@ export default class Token extends Model {
   * @return the token value
   */
   static generate(metadata) {
+    console.log('metadata @ Token', metadata);
     const tokenData = {
       metadata,
       value: hat(),

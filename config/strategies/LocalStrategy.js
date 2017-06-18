@@ -1,6 +1,6 @@
 'use strict'
 
-import Strategy from 'passport-google-plus-token'
+import Strategy from 'passport-local'
 
 export default class LocalStrategy extends Strategy {
 
