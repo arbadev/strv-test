@@ -2,6 +2,7 @@
 import Service from 'proton-service'
 import Model from 'proton-mongoose-model'
 import firebase from 'firebase'
+import _ from 'lodash'
 /*
  * -----------------------------------------------------------------------------
  *                                Constants
@@ -34,7 +35,7 @@ export default class FirebaseService extends Service {
     return contacts.child(`${id}`).once('value')
     .then((response) => {
       const contactsValue = response.val()
-      if (isEmpty(contactsValue)) return []
+      if (_.isEmpty(contactsValue)) return []
       const firebaseContacts = Object.keys(contactsValue).map(k => contactsValue[k])
       proton.log.debug(`Retrieve contacts ${firebaseContacts} to user ${id}`)
       return firebaseContacts
@@ -57,13 +58,4 @@ function logContacts(snap) {
   const _id = Model.parseObjectId(snap.key)
   const contactsSnap = snap.val()
   proton.log.debug(`Firebase ---> user ${_id} contacts`, contactsSnap)
-}
-
-
-function isEmpty(obj) {
-  if (obj == null) return true
-  if (obj.length > 0) return false
-  if (obj.length === 0) return true
-  if (typeof obj !== 'object') return true
-  return true
 }
