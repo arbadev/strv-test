@@ -21,13 +21,24 @@ const contacts = db.ref('contacts')
 
 export default class FirebaseService extends Service {
 
-  generateToken(id) {
-    return firebase.auth().createCustomToken(id)
-  }
-
   postContact(id, contact) {
     return contacts.child(`${id}`).push(contact)
-    .then(userContact => proton.log.debug('new userContact', userContact))
+    .then(() => {
+      proton.log.debug(`added contact ${contact} to user ${id}`)
+      return contact
+    })
+    .catch(err => proton.log.debug('error', err))
+  }
+
+  getContacts(id) {
+    return contacts.child(`${id}`).once('value')
+    .then((response) => {
+      const contactsValue = response.val()
+      if (isEmpty(contactsValue)) return []
+      const firebaseContacts = Object.keys(contactsValue).map(k => contactsValue[k])
+      proton.log.debug(`Retrieve contacts ${firebaseContacts} to user ${id}`)
+      return firebaseContacts
+    })
     .catch(err => proton.log.debug('error', err))
   }
 
@@ -39,21 +50,20 @@ export default class FirebaseService extends Service {
  * -----------------------------------------------------------------------------
  */
 
-contacts.on('child_changed', logContacts)
+// contacts.on('child_changed', logContacts)
 contacts.on('child_added', logContacts)
-
-// function updateCoordinates(snap) {
-//   const _id = Model.parseObjectId(snap.key)
-//   const { location } = snap.val()
-//   const coordinates = [parseFloat(location.lat), parseFloat(location.lng)]
-//   User.findOneAndUpdate({ _id }, { coordinates })
-//     .then(user => {})
-//     .catch(err => console.log(err))
-// }
 
 function logContacts(snap) {
   const _id = Model.parseObjectId(snap.key)
   const contactsSnap = snap.val()
   proton.log.debug(`Firebase ---> user ${_id} contacts`, contactsSnap)
-  // return userContacts
+}
+
+
+function isEmpty(obj) {
+  if (obj == null) return true
+  if (obj.length > 0) return false
+  if (obj.length === 0) return true
+  if (typeof obj !== 'object') return true
+  return true
 }

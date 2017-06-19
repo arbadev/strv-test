@@ -27,9 +27,8 @@ export default class UserController extends Controller {
     try {
       const { id } = this.params
       const { user } = this.request
-      // proton.log.debug('ID', id)
-      // proton.log.debug('user', user)
-      const contacts = [{ email: 'a1@gmail.com' }, { email: 'a2@gmail.com' }, { email: 'a3@gmail.com' }]
+      const { FirebaseService } = proton.app.services
+      const contacts = yield FirebaseService.getContacts(id)
       this.response.body = { user, contacts }
       return this.response.status = 201
     } catch(err) {
@@ -49,11 +48,11 @@ export default class UserController extends Controller {
       const { user } = this.request
       const { contact } = this.request.body
       const { FirebaseService } = proton.app.services
-      FirebaseService.postContact(id, contact)
-      this.response.body = { id, user, contact }
+      const firebaseContact = yield FirebaseService.postContact(id, contact)
+      this.response.body = { id, user, firebaseContact }
       return this.response.status = 201
     } catch(err) {
-      const userMessage = 'error retrieving user contacts'
+      const userMessage = 'error adding user contacts'
       this.response.body = {
         code: 4409,
         description: err.message,
