@@ -27,8 +27,8 @@ export default class UserController extends Controller {
     try {
       const { id } = this.params
       const { user } = this.request
-      proton.log.debug('ID', id)
-      proton.log.debug('user', user)
+      // proton.log.debug('ID', id)
+      // proton.log.debug('user', user)
       const contacts = [{ email: 'a1@gmail.com' }, { email: 'a2@gmail.com' }, { email: 'a3@gmail.com' }]
       this.response.body = { user, contacts }
       return this.response.status = 201

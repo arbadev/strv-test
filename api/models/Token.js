@@ -4,6 +4,8 @@ import Model from 'proton-mongoose-model'
 import hat from 'hat'
 import moment from 'moment'
 
+const defaultExpiredTime = parseInt(process.env.DEFAULT_EXPIRED_TOKEN_TIME, 10)
+
 /*
  *------------------------------------------------------------------------------
  *                                    Sub Schemas
@@ -42,7 +44,7 @@ export default class Token extends Model {
       expiredAt: {
         type: Date,
         required: true,
-        default: moment().add(1, 'h').toDate(),
+        default: moment().add(defaultExpiredTime, 'h').toDate(),
       },
     }
   }
