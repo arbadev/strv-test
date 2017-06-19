@@ -11,4 +11,6 @@ router.post('/auth', AuthPolicies.local, AuthController.authenticate)
 
 router.get('/:id/contacts', AuthPolicies.bearer, UserController.retrieveContacts)
 
+router.post('/:id/contacts', AuthPolicies.bearer, UserController.addContact)
+
 module.exports = router

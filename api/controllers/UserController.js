@@ -42,4 +42,24 @@ export default class UserController extends Controller {
       return this.response.status = 409
     }
   }
+
+  * addContact() {
+    try {
+      const { id } = this.params
+      const { user } = this.request
+      const { contact } = this.request.body
+      const { FirebaseService } = proton.app.services
+      FirebaseService.postContact(id, contact)
+      this.response.body = { id, user, contact }
+      return this.response.status = 201
+    } catch(err) {
+      const userMessage = 'error retrieving user contacts'
+      this.response.body = {
+        code: 4409,
+        description: err.message,
+        userMessage,
+      }
+      return this.response.status = 409
+    }
+  }
 }
