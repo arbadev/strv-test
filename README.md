@@ -26,10 +26,10 @@ git clone https://github.com/arbadev/strv-test.git projectName
 cd projectName
 
 # Install NPM dependencies
-npm install / yarn install (preferably yarn)
+npm / yarn install (preferably yarn)
 
 # Start the server with
-npm start  // url: 'http://localhost:8443/'
+npm / yarn start  // url: 'http://localhost:8443/'
 
 # Run unit test
 npm / yarn run test (preferably yarn)
