@@ -30,3 +30,6 @@ npm install / yarn install (preferably yarn)
 
 # Start the server with
 npm start  // url: 'http://localhost:8443/'
+
+# Run unit test
+npm / yarn run test (preferably yarn)
