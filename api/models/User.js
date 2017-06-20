@@ -1,6 +1,7 @@
 
 import Model from 'proton-mongoose-model'
-const genders = ['male', 'female', 'other']
+import Hat from 'hat'
+import Crypto from 'crypto'
 
 /*
  *------------------------------------------------------------------------------
@@ -22,19 +23,21 @@ export default class User extends Model {
     return {
       firstName: String,
       lastName: String,
-      avatar: String,
-      gender: {
-        type: String,
-        enum: genders,
-      },
-      birthdate: {
-        type: Date,
-      },
       email: {
         type: String,
         unique: true,
         sparse: true,
         validate: [v => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v), 'Invalid email format'],
+      },
+      password: {
+        type: String,
+        min: 8,
+        default: () => Hat().substring(0, 8)
+      },
+      createdAt: {
+        type: Date,
+        required: true,
+        default: Date.now,
       },
       lastLoginAt: {
         type: Date,
@@ -64,6 +67,16 @@ export default class User extends Model {
    *                              Static Methods
    *----------------------------------------------------------------------------
    */
+
+  static signPassword(password) {
+    return Crypto.createHash('sha256')
+      .update(`${process.env.STRV_SECRET_KEY_SIGNATURE}:${password}`).digest('base64')
+  }
+
+  static findByEmailAndPassword({ email, password }) {
+    return this.signPassword(password)
+    .then(hash => this.findOne({ email, password: hash }).lean())
+  }
 
 }
 

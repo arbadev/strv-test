@@ -1,6 +1,7 @@
 'use strict'
 
 import { Strategy } from 'passport-http-bearer'
+import moment from 'moment'
 
 export default class BearerStrategy extends Strategy {
 
@@ -13,14 +14,14 @@ export default class BearerStrategy extends Strategy {
     Token.findOneByValue(value)
       .then(token => {
         if (!token) throw new Error('Token not found')
-
-        const criteria = token.facebookId ?
-          { facebookId: token.facebookId } :
-          { googleId: token.googleId }
+        const now = moment()
+        const tokenExpiredAt = moment(token.expiredAt)
+        if (now.isAfter(tokenExpiredAt)) throw new Error('Expired Token')
+        const criteria = { email: token.metadata.email, password: token.metadata.password }
         return Promise.all([token, User.findOne(criteria)])
       })
       .then(([token, user]) => {
-        if (!user) return done(null, token, 'without user')
+        if (!user) throw new Error('User not found')
         user.token = token
         return done(null, user, token.scope)
       })

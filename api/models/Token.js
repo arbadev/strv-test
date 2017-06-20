@@ -2,6 +2,32 @@
 
 import Model from 'proton-mongoose-model'
 import hat from 'hat'
+import moment from 'moment'
+
+const defaultExpiredTime = parseInt(process.env.DEFAULT_EXPIRED_TOKEN_TIME, 10)
+
+/*
+ *------------------------------------------------------------------------------
+ *                                    Sub Schemas
+ *------------------------------------------------------------------------------
+ */
+const metadataSchema = {
+  firstName: String,
+  lastName: String,
+  gender: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
+  password: String,
+}
+
+/*
+ *------------------------------------------------------------------------------
+ *                              Principal Schema
+ *------------------------------------------------------------------------------
+ */
 
 export default class Token extends Model {
 
@@ -9,18 +35,16 @@ export default class Token extends Model {
     return {
       value: String,
       scope: String,
-      metadata: {
-        email: {
-          type: String,
-        },
-        password: {
-          type: String,
-        },
-      },
+      metadata: metadataSchema,
       createdAt: {
         type: Date,
         required: true,
         default: Date.now,
+      },
+      expiredAt: {
+        type: Date,
+        required: true,
+        default: moment().add(defaultExpiredTime, 'h').toDate(),
       },
     }
   }
@@ -29,7 +53,6 @@ export default class Token extends Model {
   * afterCreate(token, next) {
     const criteria = {
       email: token.metadata.email,
-      password: token.metadata.password,
     }
     const values = { lastLoginAt: token.createdAt }
     yield User.update(criteria, values)
@@ -42,6 +65,7 @@ export default class Token extends Model {
   * @return the token value
   */
   static generate(metadata) {
+    // proton.log.debug('metadata @ Token', metadata)
     const tokenData = {
       metadata,
       value: hat(),
