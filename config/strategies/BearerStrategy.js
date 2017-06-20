@@ -18,10 +18,10 @@ export default class BearerStrategy extends Strategy {
         const tokenExpiredAt = moment(token.expiredAt)
         if (now.isAfter(tokenExpiredAt)) throw new Error('Expired Token')
         const criteria = { email: token.metadata.email, password: token.metadata.password }
-        return Promise.all([token, User.findByEmailAndPassword(criteria)])
+        return Promise.all([token, User.findOne(criteria)])
       })
       .then(([token, user]) => {
-        if (!user) return done(null, token, 'without user')
+        if (!user) throw new Error('User not found')
         user.token = token
         return done(null, user, token.scope)
       })

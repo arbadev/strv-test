@@ -46,7 +46,8 @@ export default class UserController extends Controller {
   * addContact() {
     try {
       const { user } = this.request
-      const id = this.params.id || user._id
+      const id = (this.params.id === 'me' ? user._id : this.params.id)
+      // proton.log.debug('Id', id)
       const { contact } = this.request.body
       const { FirebaseService } = proton.app.services
       const contacts = yield FirebaseService.getContacts(id)
