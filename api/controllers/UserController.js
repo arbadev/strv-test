@@ -1,6 +1,7 @@
 'use strict'
 
 import Controller from 'proton-controller'
+import _ from 'lodash'
 
 export default class UserController extends Controller {
   * create() {
@@ -25,8 +26,8 @@ export default class UserController extends Controller {
 
   * retrieveContacts() {
     try {
-      const { id } = this.params
       const { user } = this.request
+      const id = this.params.id || user._id
       const { FirebaseService } = proton.app.services
       const contacts = yield FirebaseService.getContacts(id)
       this.response.body = { user, contacts }
@@ -44,12 +45,21 @@ export default class UserController extends Controller {
 
   * addContact() {
     try {
-      const { id } = this.params
       const { user } = this.request
+      const id = this.params.id || user._id
       const { contact } = this.request.body
       const { FirebaseService } = proton.app.services
+      const contacts = yield FirebaseService.getContacts(id)
+      if (_.includes(contacts, contact)) {
+        const userMessage = 'Cannot include an already included contact'
+        this.response.body = {
+          code: 4409,
+          userMessage,
+        }
+        return this.response.status = 409
+      }
       const firebaseContact = yield FirebaseService.postContact(id, contact)
-      this.response.body = { id, user, firebaseContact }
+      this.response.body = { user, firebaseContact }
       return this.response.status = 201
     } catch(err) {
       const userMessage = 'error adding user contacts'
